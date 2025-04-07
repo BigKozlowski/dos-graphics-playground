@@ -1,5 +1,5 @@
-#include <dos.h>   /* for delay(), outp() */
-#include <conio.h> /* for getch() */
+#include <dos.h>
+#include <conio.h>
 
 #define OPL_ADDR 0x388
 #define OPL_DATA 0x389
