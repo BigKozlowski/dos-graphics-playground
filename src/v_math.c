@@ -81,4 +81,10 @@ triangle2 make_screen_triangle(screen_vertex v1, screen_vertex v2, screen_vertex
     return tri;
 }
 
-
+line2 make_screen_line(screen_vertex v1, screen_vertex v2)
+{
+    line2 l;
+    l.start.x = v1.x, l.start.y = v1.y;
+    l.end.x = v2.x, l.end.y = v2.y;
+    return l;
+}

@@ -27,4 +27,6 @@ triangle2 make_screen_triangle(screen_vertex v1, screen_vertex v2, screen_vertex
 
 void make_perspective(matrix4 m, float fov_deg, float aspect, float znear, float zfar);
 
+line2 make_screen_line(screen_vertex v1, screen_vertex v2);
+
 #endif

@@ -31,11 +31,11 @@ void draw_rect(int x, int y, int w, int h, int color, char *framebuffer) {
 }
 
 // Bresenham line drawing
-void draw_line(line2 line, int color, char *framebuffer) {
-    int x0 = line.start.x;
-    int y0 = line.start.y;
-    int x1 = line.end.x;
-    int y1 = line.end.y;
+void draw_line(line2 *line, int color, char *framebuffer) {
+    int x0 = line->start.x;
+    int y0 = line->start.y;
+    int x1 = line->end.x;
+    int y1 = line->end.y;
 
     int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -50,14 +50,14 @@ void draw_line(line2 line, int color, char *framebuffer) {
     }
 }
 
-void draw_triangle(triangle2 tri, int color, char* framebuffer)
+void draw_triangle(triangle2 *tri, int color, char* framebuffer)
 {
-    line2 l1 = {.start = tri.v1, .end = tri.v2};
-    line2 l2 = {.start = tri.v2, .end = tri.v3};
-    line2 l3 = {.start = tri.v3, .end = tri.v1};
-    draw_line(l1, color, framebuffer);
-    draw_line(l2, color, framebuffer);
-    draw_line(l3, color, framebuffer);
+    line2 l1 = {.start = tri->v1, .end = tri->v2};
+    line2 l2 = {.start = tri->v2, .end = tri->v3};
+    line2 l3 = {.start = tri->v3, .end = tri->v1};
+    draw_line(&l1, color, framebuffer);
+    draw_line(&l2, color, framebuffer);
+    draw_line(&l3, color, framebuffer);
 }
 
 void swap_int(int *a, int *b) {
@@ -118,9 +118,9 @@ void draw_frame() {
 
     memset(framebuffer, 0, sizeof(framebuffer));
 
-    vec4 v1 = { 1, 0, -10, 1 };
-    vec4 v2 = { 0, 0, -10, 1 };
-    vec4 v3 = { 0, 1, -10, 1 };
+    vec4 v1 = { 9, 0, -10, 1 };
+    vec4 v2 = { 0, 10, -10, 1 };
+    vec4 v3 = { 2, 3, -10, 1 };
 
     screen_vertex s1 = project_vertex(v1, proj);
     screen_vertex s2 = project_vertex(v2, proj);
@@ -129,6 +129,14 @@ void draw_frame() {
     triangle2 tri = make_screen_triangle(s1, s2, s3);
 
     draw_filled_triangle(&tri, 12, framebuffer);
+
+    line2 l1 = make_screen_line(s1, s2);
+    line2 l2 = make_screen_line(s2, s3);
+    line2 l3 = make_screen_line(s3, s1);
+
+    draw_line(&l1, 35, framebuffer);
+    draw_line(&l2, 35, framebuffer);
+    draw_line(&l3, 35, framebuffer);
 
     dosmemput(framebuffer, SCREEN_WIDTH * SCREEN_HEIGHT, 0xA0000);
 }
