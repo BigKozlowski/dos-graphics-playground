@@ -27,7 +27,7 @@ int main() {
 
     draw_frame();
 
-    getch(); // ждём клавишу
+    getch();
     set_video_mode(0x03); // вернуть текстовый режим
     return 0;
 }

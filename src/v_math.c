@@ -57,10 +57,8 @@ void make_perspective(matrix4 m, float fov_deg, float aspect, float znear, float
 }
 
 screen_vertex project_vertex(vec4 v, const matrix4 proj) {
-    // Умножаем на матрицу
     vec4 clip = mat4_mul_vec4(proj, v);
 
-    // Деление на w
     if (clip.w != 0.0f) {
         clip.x /= clip.w;
         clip.y /= clip.w;

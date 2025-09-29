@@ -14,13 +14,11 @@ void set_video_mode(short mode) {
     __dpmi_int(0x10, &regs);
 }
 
-// Put a pixel safely
 void putpixel(int x, int y, int color, char *framebuffer) {
     if(x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) return;
     framebuffer[y * SCREEN_WIDTH + x] = color;
 }
 
-// Draw a filled rectangle with clipping
 void draw_rect(int x, int y, int w, int h, int color, char *framebuffer) {
     int i, j;
     for(i = y; i < y + h; i++) {
@@ -62,7 +60,6 @@ void draw_triangle(triangle2 tri, int color, char* framebuffer)
     draw_line(l3, color, framebuffer);
 }
 
-// Helper: swap integers
 void swap_int(int *a, int *b) {
     int t = *a; *a = *b; *b = t;
 }
@@ -114,14 +111,11 @@ void draw_filled_triangle(triangle2 *tri, int color, char* framebuffer)
     }
 }
 
-
-// Example frame drawing
 void draw_frame() {
     matrix4 proj;
     make_perspective(proj, 90.0f, (float)SCREEN_WIDTH/SCREEN_HEIGHT, 0.1f, 100.0f);
     static char framebuffer[SCREEN_WIDTH * SCREEN_HEIGHT];
 
-    // Clear framebuffer
     memset(framebuffer, 0, sizeof(framebuffer));
 
     vec4 v1 = { 1, 0, -10, 1 };
@@ -136,6 +130,5 @@ void draw_frame() {
 
     draw_filled_triangle(&tri, 12, framebuffer);
 
-    // Copy framebuffer to VGA memory
     dosmemput(framebuffer, SCREEN_WIDTH * SCREEN_HEIGHT, 0xA0000);
 }
