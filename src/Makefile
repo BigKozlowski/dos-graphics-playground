@@ -1,11 +1,11 @@
-CC=/Users/biko/repos/soft/djgpp/bin//i586-pc-msdosdjgpp-gcc
-CFLAGS=-O2 -g
-TARGET=main.exe
+# CC=/Users/biko/repos/soft/djgpp/bin//i586-pc-msdosdjgpp-gcc
+# CFLAGS=-O2 -g
+# TARGET=main.exe
 
-all: $(TARGET)
+# all: $(TARGET)
 
-$(TARGET): main.c
-	$(CC) $(CFLAGS) -o $@ $^
+# $(TARGET): main.c
+# 	$(CC) $(CFLAGS) -o $@ $^
 
-clean:
-	rm -f $(TARGET)
+# clean:
+# 	rm -f $(TARGET)
