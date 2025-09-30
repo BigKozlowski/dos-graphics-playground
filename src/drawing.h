@@ -1,6 +1,21 @@
 #ifndef DRAWING
 #define DRAWING
-#include "v_math.h"
+
+#include "fix16.h"
+
+typedef struct {
+    fix16_t x0, y0;
+    fix16_t x1, y1;
+} line2;
+
+typedef struct {
+    line2 edges[3];
+} triangle2;
+
+typedef struct {
+    int x, y;
+    fix16_t z; // глубина
+} screen_vertex;
 
 void draw_w_line(line2 line, int color, char *framebuffer);
 

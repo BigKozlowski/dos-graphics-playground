@@ -21,6 +21,29 @@ void set_color(int color, int red, int green, int blue)
     outportb(0x3C9, blue);
 }
 
+screen_vertex project_vertex(vec4 v)
+{
+    vec4 clip;
+    if (v.w != 0)
+    {
+        clip.x = fix16_div(v.x, v.w);
+        clip.y = fix16_div(v.y, v.w);
+        clip.z = fix16_div(v.z, v.w);
+    }
+    else
+    {
+        clip = v;
+    }
+
+    // Map NDC [-1..1] to screen coordinates
+    screen_vertex sv;
+    sv.x = fix16_to_int(fix16_mul(clip.x + FIX16_ONE, fix16_from_float(SCREEN_WIDTH / 2.0f)));
+    sv.y = fix16_to_int(fix16_mul(FIX16_ONE - clip.y, fix16_from_float(SCREEN_HEIGHT / 2.0f)));
+    sv.z = clip.z; // keep depth in fix16
+
+    return sv;
+}
+
 int main() {
     int x, y;
     // set_video_mode(0x13); // 320x200x256
@@ -31,20 +54,36 @@ int main() {
     // set_video_mode(0x03); // вернуть текстовый режим
 
     float angle = 0.5;
-    matrix4 model, view, proj, mvp;
-    matrix4_rotation_y(model, angle);
-    matrix4_lookat(view, (vec3){0,0,5}, (vec3){0,0,0}, (vec3){0,1,0});
-    make_perspective(proj, 60.0f, (float)SCREEN_WIDTH/SCREEN_HEIGHT, 0.1f, 100.0f);
+    mat4 model, view, proj, mvp, temp;
+    model = mat4_rotation_y(fix16_from_float(angle));
+    view  = mat4_lookat(
+                (vec3){fix16_from_float(0),fix16_from_float(0),fix16_from_float(5)}, 
+                (vec3){0,0,0}, 
+                (vec3){0,fix16_from_float(1),0});
+    proj  = mat4_perspective(
+                fix16_from_float(60.0f),
+                fix16_from_float((float)SCREEN_WIDTH/SCREEN_HEIGHT),
+                fix16_from_float(0.1f),
+                fix16_from_float(100.0f));
+    temp = mat4_mul(view, model);
+    mvp  = mat4_mul(proj, temp);
 
-    matrix4 temp;
-    matrix4_mul(temp, view, model);  // view * model
-    matrix4_mul(mvp, proj, temp);    // proj * view * model
+    vec4 v = vec4_new(fix16_from_int(0), fix16_from_int(0), fix16_from_int(1), FIX16_ONE);
+    screen_vertex sv = project_vertex(v);
+    printf("x: %d, y: %d, z: %.3f\n", sv.x, sv.y, fix16_to_float(sv.z));
+    v = vec4_new(fix16_from_int(-1), fix16_from_int(1), fix16_from_float(0.5f), FIX16_ONE);
+    sv = project_vertex(v);
+    printf("x: %d, y: %d, z: %.3f\n", sv.x, sv.y, fix16_to_float(sv.z));
+    v = vec4_new(fix16_from_int(1), fix16_from_int(-1), fix16_from_float(0.5f), FIX16_ONE);
+    sv = project_vertex(v);
+    printf("x: %d, y: %d, z: %.3f\n", sv.x, sv.y, fix16_to_float(sv.z));
+    v = vec4_new(fix16_from_float(0.5f), fix16_from_float(0.5f), fix16_from_float(0.25f), FIX16_ONE);
+    sv = project_vertex(v);
+    printf("x: %d, y: %d, z: %.3f\n", sv.x, sv.y, fix16_to_float(sv.z));
 
-    vec4 v = {1, 1, 1, 1};
-    screen_vertex sv = project_vertex(matrix4_mul_vec4(mvp, v), proj);
 
-    printf("x: %d, y: %d, z: %.3f\n", sv.x, sv.y, sv.z);
+    // screen_vertex sv = project_vertex(mat4_mul_vec4(mvp, v));
     getch();
-
+    
     return 0;
 }
