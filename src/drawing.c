@@ -130,13 +130,15 @@ void draw_frame() {
 
     draw_filled_triangle(&tri, 12, framebuffer);
 
-    line2 l1 = make_screen_line(s1, s2);
-    line2 l2 = make_screen_line(s2, s3);
-    line2 l3 = make_screen_line(s3, s1);
+    // line2 l1 = make_screen_line(s1, s2);
+    // line2 l2 = make_screen_line(s2, s3);
+    // line2 l3 = make_screen_line(s3, s1);
 
-    draw_line(&l1, 35, framebuffer);
-    draw_line(&l2, 35, framebuffer);
-    draw_line(&l3, 35, framebuffer);
+    // draw_line(&l1, 35, framebuffer);
+    // draw_line(&l2, 35, framebuffer);
+    // draw_line(&l3, 35, framebuffer);
+
+    draw_triangle(&tri, 2, framebuffer);
 
     dosmemput(framebuffer, SCREEN_WIDTH * SCREEN_HEIGHT, 0xA0000);
 }
